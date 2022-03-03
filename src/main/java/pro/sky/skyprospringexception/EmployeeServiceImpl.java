@@ -13,12 +13,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void addEmployee ( String firstName, String lastName ) {
         if (size >= employeeList.length) {
-            throw new InternalError();
+            throw new EmployeeArrayIsFull();
         }
         Employee newEmployee = new Employee(firstName, lastName);
         for (int i = 0; i < employeeList.length; i++) {
             if (newEmployee.equals(employeeList[i])){
-                throw new BadRequest();
+                throw new EmployeeAlreadyExists();
             }
         }
         employeeList[size++] = newEmployee;
@@ -44,7 +44,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             
         }
         if (!found){
-            throw new NotFound();
+            throw new EmployeeNotFound();
         }
 
     }
@@ -61,7 +61,7 @@ public class EmployeeServiceImpl implements EmployeeService {
             }
         }
         if(!found){
-            throw new NotFound();
+            throw new EmployeeNotFound();
         }
     }
 }
