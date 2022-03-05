@@ -2,59 +2,53 @@ package pro.sky.skyprospringexception;
 
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-    private int size;
 
-    public int getSize () {
-        return size;
+    @Override
+    public List<Employee> getAllEmployees(){
+        return employeeList;
     }
 
     @Override
-    public void addEmployee ( String firstName, String lastName ) {
-        if (size >= employeeList.length) {
-            throw new EmployeeArrayIsFull();
-        }
+    public void addEmployee ( String firstName, String lastName) {
         Employee newEmployee = new Employee(firstName, lastName);
-        for (int i = 0; i < employeeList.length; i++) {
-            if (newEmployee.equals(employeeList[i])){
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (newEmployee.equals(employeeList.get(i))){
                 throw new EmployeeAlreadyExists();
             }
         }
-        employeeList[size++] = newEmployee;
+        employeeList.add(newEmployee);
         System.out.println("Сотрудник " + newEmployee.getEmployeeFirstName() + " "
                 + newEmployee.getEmployeeLastName() + " добавлен");
     }
 
     @Override
-    public void removeEmployee ( String firstName, String lastName ) {
+    public void removeEmployee ( String firstName, String lastName) {
         Employee oldEmployee = new Employee(firstName, lastName);
         boolean found = false;
-        for (int i = 0; i < employeeList.length; i++) {
-            if(oldEmployee.equals(employeeList[i])){
+        for (int i = 0; i < employeeList.size(); i++) {
+            if(oldEmployee.equals(employeeList.get(i))){
                 found = true;
-                employeeList[i] = null;
-                if (i != employeeList.length - 1) {
-                    System.arraycopy(employeeList, i + 1, employeeList, i, size - i);
-                }
-                size--;
+                employeeList.remove(i);
                 System.out.println("Сотрудник " + oldEmployee.getEmployeeFirstName() + " "
                         + oldEmployee.getEmployeeLastName() + " удален");
             }
-            
         }
         if (!found){
             throw new EmployeeNotFound();
         }
-
     }
 
     @Override
     public void findEmployee ( String firstName, String lastName ) {
         Employee requestedEmployee = new Employee(firstName, lastName);
         boolean found = false;
-        for (int i = 0; i < employeeList.length; i++) {
-            if (requestedEmployee.equals(employeeList[i])) {
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (requestedEmployee.equals(employeeList.get(i))) {
                 found = true;
                 System.out.println("Сотрудник " + requestedEmployee.getEmployeeFirstName() + " "
                         + requestedEmployee.getEmployeeLastName() + " найден под номером в списке:" + i);
