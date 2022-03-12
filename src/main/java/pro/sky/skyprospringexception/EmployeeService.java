@@ -1,10 +1,12 @@
 package pro.sky.skyprospringexception;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public interface EmployeeService {
-    List<Employee> employeeList = new ArrayList<>();
+    Map<String, Employee> employeeMap = new HashMap<>();
 
     void addEmployee ( String firstName, String lastName);
 
@@ -12,5 +14,5 @@ public interface EmployeeService {
 
     void findEmployee ( String firstName, String lastName);
 
-    List<Employee> getAllEmployees();
+    Map<String, Employee> getEmployeeMap();
 }
