@@ -9,38 +9,56 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("/departments")
 public class Controller {
-    private final EmployeeService employeeService;
+    private final EmployeeService2 employeeService2;
 
-    public Controller ( EmployeeService employeeService ) {
-        this.employeeService = employeeService;
+    public Controller ( EmployeeService2 employeeService ) {
+        this.employeeService2 = employeeService;
     }
 
     @GetMapping("/add")
-    public Employee addEmployee( @RequestParam String firstName,
-                                 @RequestParam String lastName ){
-        Employee employee = new Employee(firstName, lastName);
-        employeeService.addEmployee(firstName,lastName);
+    public Employee addEmployee( @RequestParam("name") String firstName,
+                                 @RequestParam("surname") String lastName,
+                                 @RequestParam("id") int employeeDepartment,
+                                 @RequestParam("pay") int employeePayment){
+        Employee employee = new Employee(firstName, lastName,employeeDepartment,employeePayment);
+        employeeService2.addEmployee(firstName,lastName,employeeDepartment,employeePayment);
         return employee;
     }
     @GetMapping("/find")
-    public Employee findEmployee(@RequestParam String firstName,
-                                 @RequestParam String lastName){
-        Employee employee = new Employee(firstName, lastName);
-        employeeService.findEmployee(firstName,lastName);
-        return employee;
+    public Employee findEmployee(@RequestParam("name") String firstName,
+                                 @RequestParam("surname") String lastName){
+        String fullName = firstName +" "+ lastName;
+        employeeService2.findEmployee(firstName,lastName);
+        return employeeService2.getEmployeeMap().get(fullName);
     }
     @GetMapping("/remove")
-    public Employee removeEmployee(@RequestParam String firstName,
-                                   @RequestParam String lastName) {
-
-        Employee employee = new Employee(firstName, lastName);
-        employeeService.removeEmployee(firstName,lastName);
-        return employee;
+    public Employee removeEmployee(@RequestParam("name") String firstName,
+                                   @RequestParam("surname") String lastName) {
+        String fullName = firstName +" "+ lastName;
+        employeeService2.removeEmployee(firstName,lastName);
+        return employeeService2.getEmployeeMap().get(fullName);
     }
     @GetMapping("/info")
     public Map<String, Employee> employeeInformation(){
-        return employeeService.getEmployeeMap();
+        return employeeService2.getEmployeeMap();
+    }
+
+    @GetMapping("/max-salary")
+    public Employee getMaxSalaryEmployee(@RequestParam("id") int employeeDepartment){
+        return employeeService2.getMaxSalaryEmployee(employeeService2.getEmployeeMap(),employeeDepartment);
+    }
+    @GetMapping("/min-salary")
+    public Employee getMinSalaryEmployee(@RequestParam("id") int employeeDepartment){
+        return employeeService2.getMinSalaryEmployee(employeeService2.getEmployeeMap(),employeeDepartment);
+    }
+    @GetMapping
+    public List<Employee> getAllEmployees(){
+        return employeeService2.getAllEmployees(employeeService2.getEmployeeMap());
+    }
+    @GetMapping("/all")
+    public List<Employee> getAllDepartmentEmployees(@RequestParam("id") int employeeDepartment){
+        return employeeService2.getAllDepartmentEmployees(employeeService2.getEmployeeMap(),employeeDepartment);
     }
 }

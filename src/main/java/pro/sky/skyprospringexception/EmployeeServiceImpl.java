@@ -2,12 +2,11 @@ package pro.sky.skyprospringexception;
 
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService2 {
 
     public Map<String, Employee> getEmployeeMap(){
         return employeeMap;
@@ -15,7 +14,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public void removeEmployee ( String firstName, String lastName) {
-        Employee oldEmployee = new Employee(firstName, lastName);
         String oldEmployeeFullName = firstName + " " + lastName;
         boolean found = false;
         if(employeeMap.containsKey(oldEmployeeFullName)){
@@ -40,8 +38,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
-    public void addEmployee(String firstName, String lastName){
-        Employee newEmployee = new Employee(firstName, lastName);
+    public void addEmployee(String firstName, String lastName, int employeeDepartment, int employeePayment){
+        Employee newEmployee = new Employee(firstName, lastName,employeeDepartment, employeePayment);
         String newEmployeeFullName = firstName + " " + lastName;
         if(employeeMap.containsKey(newEmployeeFullName)){
             throw new EmployeeAlreadyExists();
@@ -51,5 +49,28 @@ public class EmployeeServiceImpl implements EmployeeService {
                     + newEmployee.getEmployeeLastName() + " добавлен");
         }
     }
+
+    public List<Employee> getAllEmployees (Map<String, Employee> employeeMap) {
+        return employeeMap.values().stream()
+                .collect(Collectors.toList());
+    }
+    public List<Employee> getAllDepartmentEmployees(Map<String, Employee> employeeMap, int employeeDepartment){
+        return employeeMap.values().stream()
+                .filter(employee-> employee.getEmployeeDepartment()==employeeDepartment)
+                .collect(Collectors.toList());
+    };
+    public Employee getMaxSalaryEmployee (Map<String, Employee> employeeMap,int employeeDepartment){
+        return employeeMap.values().stream()
+                .filter(employee-> employee.getEmployeeDepartment()==employeeDepartment)
+                .max(Comparator.comparing(Employee::getEmployeePayment))
+                .get();
+    }
+    public Employee getMinSalaryEmployee(Map<String, Employee> employeeMap,int employeeDepartment){
+        return employeeMap.values().stream()
+                .filter(employee-> employee.getEmployeeDepartment()==employeeDepartment)
+                .min(Comparator.comparing(Employee::getEmployeePayment))
+                .get();
+    }
+
 
 }
